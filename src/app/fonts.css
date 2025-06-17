@@ -64,8 +64,8 @@
 .dot-matrix-bg-small {
     background: #00000030;
     background-image:
-        radial-gradient(circle, #000000 1px, transparent 1px);
-    background-size: 4px 4px;
+        radial-gradient(circle, #00000030 1px, transparent 1px);
+    background-size: 3px 3px;
     background-position: 0 0;
 }
 

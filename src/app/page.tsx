@@ -1,34 +1,87 @@
+"use client";
+
 import Image from "next/image";
+import useSWR from 'swr';
 import DraggableNote from "./components/DraggableNote";
+import { ProfileType } from "./type/profile";
+
+// SWR fetcher函数
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  console.log('SWR获取到的用户资料数据:', data);
+  return data.data;
+};
 
 export default function Home() {
+  // 使用SWR获取数据
+  const { data, error, isLoading } = useSWR<ProfileType>(
+    'https://fc-mp-b1a9bc8c-0aab-44ca-9af2-2bd604163a78.next.bspapp.com/profile/rabithua',
+    fetcher,
+    {
+      revalidateOnFocus: false, // 聚焦时不重新验证
+      revalidateOnReconnect: true, // 重新连接时重新验证
+      refreshInterval: 0, // 不自动刷新
+    }
+  );
+
+  // 错误处理
+  if (error) {
+    console.error('SWR获取数据失败:', error);
+  }
+
+  // 加载状态
+  if (isLoading) {
+    console.log('SWR正在加载数据...');
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div
-        className=" mx-auto aspect-[210/297] border-4 flex flex-col items-center gap-8 bg-white relative"
+        className=" mx-auto aspect-[210/297] flex flex-col items-center gap-8 bg-white relative"
       >
         <Image
           src="/Menu bar.svg"
           alt="Menu bar"
           width={800}
           height={100}
-          className="w-full h-5"
+          className="w-full"
         />
 
         <div className="flex gap-5 px-6 w-full">
           <Image
-            src="/placeholder.svg"
+            src={data?.avatar || "https://cdn.bonjour.bio/static/image/defaultAvatar.svg"} // 使用SWR获取的头像或占位图
             alt="Placeholder"
             width={200}
             height={200}
             className="w-40 rounded-full border border-black"
           />
           <div className="flex flex-col justify-around">
-            <div className="text-5xl font-bold font-finders-keepers">name</div>
+            <div className="text-5xl font-bold font-fusion-pixel">{data?.name}</div>
             <div className="space-y-1">
-              <div className="text-3xl font-medium font-finders-keepers">currentdoing&role</div>
-              <div className="text-3xl font-medium font-finders-keepers">currentdoing&role</div>
-              <div className="text-3xl font-medium font-finders-keepers">currentdoing&role</div>
+              {
+                (data?.basicInfo?.current_doing && data?.basicInfo?.role) && (
+                  <div className="text-3xl font-medium font-fusion-pixel">{
+                    `${data.basicInfo.current_doing}@${data.basicInfo.role}`
+                  }</div>)}
+              {data?.basicInfo?.region &&
+                Object.values(data.basicInfo.region).every(v => v !== undefined && v !== null && v !== "") && (
+                  <div className="text-2xl font-medium font-fusion-pixel">
+                    {Object.values(data.basicInfo.region)
+                      .filter(v => v !== undefined && v !== null && v !== "")
+                      .join("，")}
+                  </div>
+                )}
+              {data?.basicInfo?.gender && (
+                <div className="text-2xl font-medium font-fusion-pixel">
+                  {data.basicInfo.gender}
+                </div>
+              )}
             </div>
           </div>
           <div className="ml-auto flex flex-col justify-around">
@@ -66,13 +119,11 @@ export default function Home() {
           <div className="w-full border-4 border-black p-2 ">
             <div className="w-full flex border-2 border-black relative items-stretch">
               {/* 左边内容区 */}
-              <div className="flex flex-col gap-4 items-center w-8/10 py-9 px-5 my-3 ml-3 border-gray-100 border-y-3">
+              <div className="flex flex-col duration-300 gap-4 items-center w-8/10 py-9 px-5 my-3 ml-3 border-gray-100 border-y-3">
                 <div className="line-clamp-5 text-xl font-fusion-pixel whitespace-pre-line">
-                  👋🏻 Bonjour! 执剑人｜00 后创业 <br />
-                  🎨 全干工程师 （产品｜设计｜iOS） <br />
-                  🧑🏻‍🚀 02 年，但做了 3.5 年古典产品经理 <br />
-                  🏛️ 想为文明留下些事物 <br />
-                  😎 奇绩 @S25｜GreyMatter
+                  {
+                    data?.description || "This is a placeholder description. Please update your profile with a meaningful description."
+                  }
                 </div>
                 <div className="border-1 border-black bg-[#E6E6E6] py-1 px-2 w-full font-chi-kare-go">
                   Type a message...
@@ -85,7 +136,7 @@ export default function Home() {
                   alt="Arrow"
                   width={50}
                   height={50}
-                  className="size-9"
+                  className="size-9 -translate-y-[2px]"
                 />
 
                 <Image
@@ -101,7 +152,7 @@ export default function Home() {
                   alt="Arrow"
                   width={50}
                   height={50}
-                  className="size-9 rotate-x-180"
+                  className="size-9 translate-y-[2px] rotate-x-180"
                 />
               </div>
             </div>
