@@ -6,14 +6,25 @@ import NoStyleTextarea from './NoStyleInput';
 
 interface DraggableNoteProps {
     className?: string;
+    id: string;
+    initialText?: string;
+    initialPosition?: { x: number; y: number };
+    onTextChange?: (id: string, text: string) => void;
+    onPositionChange?: (id: string, position: { x: number; y: number }) => void;
+    onDelete?: (id: string) => void;
 }
 
 export default function DraggableNote({
-    className = ""
+    className = "",
+    id,
+    initialText = "来找我玩！😎",
+    initialPosition = { x: 345, y: 456 },
+    onTextChange,
+    onPositionChange,
+    onDelete
 }: DraggableNoteProps) {
-    const [note, setNote] = useState<string>("来找我玩！😎");
-
-    const [position, setPosition] = useState({ x: 345, y: 456 });
+    const [note, setNote] = useState<string>(initialText);
+    const [position, setPosition] = useState(initialPosition);
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const noteRef = useRef<HTMLDivElement>(null);
@@ -55,7 +66,26 @@ export default function DraggableNote({
 
     const handleMouseUp = useCallback(() => {
         setIsDragging(false);
-    }, []);
+        // 当拖拽结束时，通知父组件位置变化
+        if (onPositionChange) {
+            onPositionChange(id, position);
+        }
+    }, [id, position, onPositionChange]);
+
+    // 处理文本变化
+    const handleTextChange = useCallback((newText: string) => {
+        setNote(newText);
+        if (onTextChange) {
+            onTextChange(id, newText);
+        }
+    }, [id, onTextChange]);
+
+    // 处理删除
+    const handleDelete = useCallback(() => {
+        if (onDelete) {
+            onDelete(id);
+        }
+    }, [id, onDelete]);
 
     // 添加全局事件监听器
     useEffect(() => {
@@ -74,12 +104,12 @@ export default function DraggableNote({
             ref={noteRef}
             className={`draggable-note ${className} ${isDragging ? 'dragging' : ''}`}
             style={{
-                '--note-left': `${position.x}px`,
-                '--note-top': `${position.y}px`
-            } as React.CSSProperties}
+                left: position.x,
+                top: position.y
+            }}
             onMouseDown={handleMouseDown}
         >
-            <div className="drag-handle">
+            <div className="drag-handle relative">
                 <Image
                     src="/noteHeader.svg"
                     alt="Note Header"
@@ -90,7 +120,7 @@ export default function DraggableNote({
                 />
             </div>
             <div className="p-3 font-fusion-pixel text-sm">
-                <NoStyleTextarea onChange={setNote} value={note} />
+                <NoStyleTextarea onChange={handleTextChange} value={note} />
             </div>
         </div>
     );

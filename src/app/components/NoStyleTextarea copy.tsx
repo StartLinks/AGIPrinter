@@ -1,5 +1,5 @@
 
-export default function NoStyleInput({
+export default function NoStyleTextarea({
   value,
   onChange,
   placeholder,
@@ -10,7 +10,7 @@ export default function NoStyleInput({
   placeholder?: string;
   className?: string;
 }) {
-  return <input
+  return <textarea
     aria-label="No Style Input"
     value={value}
     onChange={(e) => onChange(e.target.value)}

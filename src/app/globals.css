@@ -29,3 +29,40 @@ body {
   width: 595px;
   height: 842px;
 } */
+
+/* 便签样式 */
+.draggable-note {
+  position: absolute;
+  z-index: 10;
+  cursor: move;
+}
+
+.draggable-note.dragging {
+  z-index: 1000;
+}
+
+.draggable-note .drag-handle {
+  cursor: move;
+}
+
+.note-delete-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  background-color: #ef4444;
+  color: white;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.note-delete-btn:hover {
+  background-color: #dc2626;
+}

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import useSWR from 'swr';
 import DraggableNote from "./components/DraggableNote";
+import NoStyleInput from "./components/NoStyleInput";
 import { ProfileType } from "./type/profile";
 
 // SWR fetcher函数
@@ -20,11 +21,45 @@ const fetcher = async (url: string) => {
 };
 
 export default function Home() {
-  const [tags, settags] = useState<string[]>([
+  const [tags, _settags] = useState<string[]>([
     "Product Manager",
     "Design",
     "iOS Dev"
   ]);
+
+  // 便签状态管理
+  const [notes, setNotes] = useState<Array<{ id: string; text: string; position: { x: number; y: number } }>>([
+    { id: 'note-1', text: '来找我玩！😎', position: { x: 345, y: 456 } }
+  ]);
+
+  // 添加便签
+  const addNote = () => {
+    const newNote = {
+      id: `note-${Date.now()}`,
+      text: '新便签',
+      position: { x: Math.random() * 200 + 100, y: Math.random() * 200 + 200 }
+    };
+    setNotes(prev => [...prev, newNote]);
+  };
+
+  // 删除便签
+  const removeNote = (noteId: string) => {
+    setNotes(prev => prev.filter(note => note.id !== noteId));
+  };
+
+  // 更新便签内容
+  const updateNote = (noteId: string, text: string) => {
+    setNotes(prev => prev.map(note =>
+      note.id === noteId ? { ...note, text } : note
+    ));
+  };
+
+  // 更新便签位置
+  const updateNotePosition = (noteId: string, position: { x: number; y: number }) => {
+    setNotes(prev => prev.map(note =>
+      note.id === noteId ? { ...note, position } : note
+    ));
+  };
   // 使用SWR获取数据
   const { data, error, isLoading } = useSWR<ProfileType>(
     'https://fc-mp-b1a9bc8c-0aab-44ca-9af2-2bd604163a78.next.bspapp.com/profile/rabithua',
@@ -47,161 +82,218 @@ export default function Home() {
   }
 
   return (
-    <div className=" h-screen bg-gray-100 flex items-center justify-center gap-12">
-      <div className="flex flex-col border-2 divide-y-1 divide-black bg-gray-50 font-fusion-pixel">
-        <div className="flex flex-col gap-2 py-3  px-4"><div>专属链接</div>
-          <input
-            aria-label="Profile Link"
-            type="text"
-            value={data?.profile_link || "https://bonjour.bio/rabithua"}
-            readOnly
-            className="border border-black px-2 py-1 w-60"
-          />
-        </div>
-
-
-      </div>
-      <div
-        className=" aspect-[210/297] w-[595px] h-[842px] flex flex-col items-center gap-8 bg-white relative"
-      >
+    <div className=" h-screen flex justify-center bg-blue-800 square-matrix-bg">
+      <div className="flex gap-12 my-auto">
         <Image
-          src="/Menu bar.svg"
-          alt="Menu bar"
-          width={800}
+          src="/qrcode.png"
+          alt="Logo"
+          width={100}
           height={100}
-          className="w-full"
+          className="size-48 border-2 p-3 bg-white border-dashed border-black"
         />
-
-        <div className="flex items-center gap-5 px-6 w-full">
-          <div className="flex gap-5 items-center">
-            <Image
-              src={data?.avatar || "https://cdn.bonjour.bio/static/image/defaultAvatar.svg"} // 使用SWR获取的头像或占位图
-              alt="Placeholder"
-              width={200}
-              height={200}
-              className="size-40 rounded-full shrink-0 border border-black"
-            />
-            <div className="flex flex-col gap-5 justify-around">
-              <div className="text-5xl font-bold font-fusion-pixel">{data?.name}</div>
-              <div className="space-y-1">
-                {
-                  (data?.basicInfo?.current_doing && data?.basicInfo?.role) && (
-                    <div className="text-3xl font-medium font-fusion-pixel">{
-                      `${data.basicInfo.current_doing}@${data.basicInfo.role}`
-                    }</div>)}
-                {data?.basicInfo?.region &&
-                  Object.values(data.basicInfo.region).every(v => v !== undefined && v !== null && v !== "") && (
-                    <div className="text-2xl font-medium font-fusion-pixel">
-                      {Object.values(data.basicInfo.region)
-                        .filter(v => v !== undefined && v !== null && v !== "")
-                        .join("，")}
-                    </div>
-                  )}
-                {data?.basicInfo?.gender && (
-                  <div className="text-2xl font-medium font-fusion-pixel">
-                    {data.basicInfo.gender}
-                  </div>
-                )}
-              </div>
+        <div className="flex h-fit flex-col border-2 border-dashed divide-y-1 divide-black bg-gray-50 font-fusion-pixel">
+          <div className="flex flex-col gap-2 py-3  px-4">
+            <div>专属链接</div>
+            <div className="text-sm opacity-50 flex items-center">
+              打开 Bonjour数字名片小程序 - 我 - 左上角礼物图标 <Image
+                src="https://cdn.bonjour.bio/static/menu/gift.svg"
+                alt="Gift Icon"
+                width={16}
+                height={16}
+                className="inline-block mx-1"
+              />
+              - 复制专属链接
+            </div>
+            <div className="flex items-center">
+              https://bonjour.bio/
+              <NoStyleInput
+                aria-label="Profile Link"
+                value={data?.profile_link || "rabithua"}
+                className="border-b border-black px-2 py-1 w-20!"
+                onChange={(e) => {
+                  console.log('Profile Link changed:', e);
+                }
+                }
+                placeholder="rabithua"
+              />
             </div>
           </div>
 
-          <div className="ml-auto flex flex-col shrink-0 justify-around">
-            {
-              tags.map((tag, index) => (<div key={
-                index
-              } className="flex flex-col items-center">
-                <Image
-                  src="/folder.svg"
-                  alt="Folder"
-                  width={50}
-                  height={50}
-                  className="w-12 h-12"
-                />
-                <div className="text-xl font-medium font-finders-keepers">{tag}</div>
-              </div>))
-            }
+          {/* 便签管理区域 */}
+          <div className="flex flex-col gap-3 py-3 px-4">
+            <div>便签管理</div>
+            <div className="flex gap-2">
+              <button
+                onClick={addNote}
+                className="px-3 py-1 bg-blue-500 text-white text-sm border border-black hover:bg-blue-600 transition-colors"
+              >
+                添加便签
+              </button>
+              <button
+                onClick={() => notes.length > 0 && removeNote(notes[notes.length - 1].id)}
+                disabled={notes.length === 0}
+                className="px-3 py-1 bg-red-500 text-white text-sm border border-black hover:bg-red-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                删除便签
+              </button>
+            </div>
+            <div className="text-xs text-gray-600">
+              当前便签数量: {notes.length}
+            </div>
           </div>
         </div>
-
-        <div className="w-full px-6">
+        <div
+          className=" aspect-[210/297] w-[595px] h-[842px] flex flex-col items-center gap-8 bg-white relative"
+        >
           <Image
-            src="/aboutmeBar.svg"
-            alt="About Me Bar"
+            src="/Menu bar.svg"
+            alt="Menu bar"
             width={800}
             height={100}
             className="w-full"
           />
-          <div className="w-full border-4 border-black p-2 ">
-            <div className="w-full flex border-2 border-black relative items-stretch">
-              {/* 左边内容区 */}
-              <div className="flex flex-col duration-300 gap-4 items-center w-8/10 py-9 px-5 my-3 ml-3 border-gray-100 border-y-3">
-                <div className="line-clamp-5 text-xl font-fusion-pixel whitespace-pre-line">
+
+          <div className="flex items-center gap-5 px-6 w-full">
+            <div className="flex gap-5 items-center">
+              <Image
+                src={data?.avatar || "https://cdn.bonjour.bio/static/image/defaultAvatar.svg"} // 使用SWR获取的头像或占位图
+                alt="Placeholder"
+                width={200}
+                height={200}
+                className="size-40 rounded-full shrink-0 border border-black"
+              />
+              <div className="flex flex-col gap-5 justify-around">
+                <div className="text-5xl font-bold font-fusion-pixel">{data?.name}</div>
+                <div className="space-y-1">
                   {
-                    data?.description || "This is a placeholder description. Please update your profile with a meaningful description."
-                  }
+                    (data?.basicInfo?.current_doing && data?.basicInfo?.role) && (
+                      <div className="text-3xl font-medium font-fusion-pixel">{
+                        `${data.basicInfo.current_doing}@${data.basicInfo.role}`
+                      }</div>)}
+                  {data?.basicInfo?.region &&
+                    Object.values(data.basicInfo.region).every(v => v !== undefined && v !== null && v !== "") && (
+                      <div className="text-2xl font-medium font-fusion-pixel">
+                        {Object.values(data.basicInfo.region)
+                          .filter(v => v !== undefined && v !== null && v !== "")
+                          .join("，")}
+                      </div>
+                    )}
+                  {data?.basicInfo?.gender && (
+                    <div className="text-2xl font-medium font-fusion-pixel">
+                      {data.basicInfo.gender}
+                    </div>
+                  )}
                 </div>
-                <div className="border-1 border-black bg-[#E6E6E6] py-1 px-2 w-full font-chi-kare-go">
-                  Type a message...
-                </div>
-              </div>
-
-              <div className="w-9 border-2 ml-auto relative flex flex-col justify-between dot-matrix-bg-small">
-                <Image
-                  src="/arrow.svg"
-                  alt="Arrow"
-                  width={50}
-                  height={50}
-                  className="size-9 -translate-y-[2px]"
-                />
-
-                <Image
-                  src="/Scrollbox.svg"
-                  alt="Arrow"
-                  width={50}
-                  height={50}
-                  className="size-9 rotate-x-180"
-                />
-
-                <Image
-                  src="/arrow.svg"
-                  alt="Arrow"
-                  width={50}
-                  height={50}
-                  className="size-9 translate-y-[2px] rotate-x-180"
-                />
               </div>
             </div>
 
+            <div className="ml-auto flex flex-col shrink-0 justify-around">
+              {
+                tags.map((tag, index) => (<div key={
+                  index
+                } className="flex flex-col items-center">
+                  <Image
+                    src="/folder.svg"
+                    alt="Folder"
+                    width={50}
+                    height={50}
+                    className="w-12 h-12"
+                  />
+                  <div className="text-xl font-medium font-finders-keepers">{tag}</div>
+                </div>))
+              }
+            </div>
           </div>
+
+          <div className="w-full px-6">
+            <Image
+              src="/aboutmeBar.svg"
+              alt="About Me Bar"
+              width={800}
+              height={100}
+              className="w-full"
+            />
+            <div className="w-full border-4 border-black p-2 ">
+              <div className="w-full flex border-2 border-black relative items-stretch">
+                {/* 左边内容区 */}
+                <div className="flex flex-col duration-300 gap-4 items-center w-8/10 py-9 px-5 my-3 ml-3 border-gray-100 border-y-3">
+                  <div className="line-clamp-5 text-xl font-fusion-pixel whitespace-pre-line">
+                    {
+                      data?.description || "This is a placeholder description. Please update your profile with a meaningful description."
+                    }
+                  </div>
+                  <div className="border-1 border-black bg-[#E6E6E6] py-1 px-2 w-full font-chi-kare-go">
+                    Type a message...
+                  </div>
+                </div>
+
+                <div className="w-9 border-2 ml-auto relative flex flex-col justify-between dot-matrix-bg-small">
+                  <Image
+                    src="/arrow.svg"
+                    alt="Arrow"
+                    width={50}
+                    height={50}
+                    className="size-9 -translate-y-[2px]"
+                  />
+
+                  <Image
+                    src="/Scrollbox.svg"
+                    alt="Arrow"
+                    width={50}
+                    height={50}
+                    className="size-9 rotate-x-180"
+                  />
+
+                  <Image
+                    src="/arrow.svg"
+                    alt="Arrow"
+                    width={50}
+                    height={50}
+                    className="size-9 translate-y-[2px] rotate-x-180"
+                  />
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <Image
+            src="/agiFolder.svg"
+            alt="AGI Folder"
+            width={160}
+            height={100}
+            className="h-12 absolute bottom-12 left-10"
+          />
+
+          <Image
+            src="/BonjourFolder.svg"
+            alt="Bonjour Folder"
+            width={250}
+            height={100}
+            className="h-12 absolute bottom-36 left-44"
+          />
+
+          <Image
+            src="/Sticker.svg"
+            alt="Sticker"
+            width={250}
+            height={250}
+            className="size-48 z-1 absolute bottom-6 right-6"
+          />
+
+          {/* 便签组件 */}
+          {notes.map(note => (
+            <DraggableNote
+              key={note.id}
+              id={note.id}
+              initialText={note.text}
+              initialPosition={note.position}
+              onTextChange={updateNote}
+              onPositionChange={updateNotePosition}
+              onDelete={removeNote}
+            />
+          ))}
         </div>
-
-        <Image
-          src="/agiFolder.svg"
-          alt="AGI Folder"
-          width={160}
-          height={100}
-          className="h-12 absolute bottom-12 left-10"
-        />
-
-        <Image
-          src="/BonjourFolder.svg"
-          alt="Bonjour Folder"
-          width={250}
-          height={100}
-          className="h-12 absolute bottom-36 left-44"
-        />
-
-        <Image
-          src="/Sticker.svg"
-          alt="Sticker"
-          width={250}
-          height={250}
-          className="size-48 z-1 absolute bottom-6 right-6"
-        />
-
-        {/* note */}
-        <DraggableNote />
       </div>
     </div>
   );
