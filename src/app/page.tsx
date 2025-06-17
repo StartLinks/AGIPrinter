@@ -7,6 +7,7 @@ import ControlPanel from "./components/ControlPanel";
 import ProfileCard from "./components/ProfileCard";
 import SkeletonProfileCard from "./components/SkeletonProfileCard";
 import { useNotes } from "./hooks/useNotes";
+import { usePageState } from "./hooks/usePageState";
 import { usePrint } from "./hooks/usePrint";
 import { ProfileType } from "./type/profile";
 
@@ -94,6 +95,14 @@ export default function Home() {
     }
   );
 
+  // 页面状态管理，减少闪烁
+  const pageState = usePageState({
+    isLoading,
+    error,
+    data,
+    debouncedUsername
+  });
+
   // 错误处理
   if (error) {
     console.error('SWR获取数据失败:', error);
@@ -106,18 +115,18 @@ export default function Home() {
 
   // 渲染右侧内容的函数
   const renderRightPanel = () => {
-    // 错误状态
-    if (error) {
+    // 使用页面状态来决定显示内容，减少闪烁
+    if (pageState.shouldShowError) {
       return (
         <SkeletonProfileCard
           showError={true}
-          errorMessage={error.message.includes('404') ? '用户不存在' : '数据加载失败'}
+          errorMessage={error?.message.includes('404') ? '用户不存在' : '数据加载失败'}
         />
       );
     }
 
     // 加载状态或无用户名
-    if (isLoading || !debouncedUsername) {
+    if (pageState.shouldShowSkeleton) {
       return <SkeletonProfileCard showError={false} />;
     }
 

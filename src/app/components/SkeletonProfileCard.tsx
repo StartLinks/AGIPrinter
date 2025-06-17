@@ -14,7 +14,7 @@ export default function SkeletonProfileCard({
     return (
         <div
             id="print-area"
-            className="aspect-[210/297] w-[595px] h-[842px] flex flex-col items-center gap-8 bg-white relative"
+            className="aspect-[210/297] w-[595px] h-[842px] flex flex-col items-center gap-8 bg-white relative smooth-transition skeleton-fade-in"
         >
             <Image
                 src="/Menu bar.svg"
@@ -27,16 +27,16 @@ export default function SkeletonProfileCard({
             <div className="flex items-center gap-5 px-6 w-full">
                 <div className="flex gap-5 items-center">
                     {/* 头像骨架屏 */}
-                    <div className="size-40 rounded-full shrink-0 border border-black bg-gray-200 animate-pulse" />
+                    <div className="size-40 rounded-full shrink-0 border border-black bg-gray-200 skeleton-pulse" />
 
                     <div className="flex flex-col gap-5 justify-around">
                         {/* 名字骨架屏 */}
-                        <div className="h-12 w-48 bg-gray-200 rounded animate-pulse" />
+                        <div className="h-12 w-48 bg-gray-200 rounded skeleton-pulse" />
 
                         <div className="space-y-2">
-                            <div className="h-8 w-64 bg-gray-200 rounded animate-pulse" />
-                            <div className="h-6 w-40 bg-gray-200 rounded animate-pulse" />
-                            <div className="h-6 w-24 bg-gray-200 rounded animate-pulse" />
+                            <div className="h-8 w-64 bg-gray-200 rounded skeleton-pulse" />
+                            <div className="h-6 w-40 bg-gray-200 rounded skeleton-pulse" />
+                            <div className="h-6 w-24 bg-gray-200 rounded skeleton-pulse" />
                         </div>
                     </div>
                 </div>
@@ -51,7 +51,7 @@ export default function SkeletonProfileCard({
                                 height={50}
                                 className="w-12 h-12 opacity-50"
                             />
-                            <div className="h-4 w-16 bg-gray-200 rounded animate-pulse mt-1" />
+                            <div className="h-4 w-16 bg-gray-200 rounded skeleton-pulse mt-1" />
                         </div>
                     ))}
                 </div>
@@ -81,10 +81,10 @@ export default function SkeletonProfileCard({
                                 </div>
                             ) : (
                                 <div className="space-y-3">
-                                    <div className="h-6 w-full bg-gray-200 rounded animate-pulse" />
-                                    <div className="h-6 w-5/6 bg-gray-200 rounded animate-pulse" />
-                                    <div className="h-6 w-4/5 bg-gray-200 rounded animate-pulse" />
-                                    <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse" />
+                                    <div className="h-6 w-full bg-gray-200 rounded skeleton-pulse" />
+                                    <div className="h-6 w-5/6 bg-gray-200 rounded skeleton-pulse" />
+                                    <div className="h-6 w-4/5 bg-gray-200 rounded skeleton-pulse" />
+                                    <div className="h-6 w-3/4 bg-gray-200 rounded skeleton-pulse" />
                                 </div>
                             )}
 
