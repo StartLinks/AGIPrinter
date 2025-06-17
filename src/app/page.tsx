@@ -68,6 +68,62 @@ export default function Home() {
     ));
   };
 
+  // 打印功能
+  const handlePrint = () => {
+    const printContent = document.getElementById('print-area');
+    if (!printContent) return;
+
+    // 创建一个新窗口用于打印
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    // 复制当前页面的样式
+    const styles = Array.from(document.styleSheets)
+      .map((styleSheet) => {
+        try {
+          return Array.from(styleSheet.cssRules)
+            .map(rule => rule.cssText)
+            .join('');
+        } catch (e) {
+          console.log('Error accessing stylesheet:', e);
+          return '';
+        }
+      })
+      .join('');
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Print Content</title>
+          <style>
+            ${styles}
+            @media print {
+              body { margin: 0; padding: 0; }
+              .print-area { 
+                width: 210mm !important; 
+                height: 297mm !important; 
+                margin: 0 auto !important;
+                transform: none !important;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          ${printContent.outerHTML}
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+
+    // 等待样式加载完成后打印
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 500);
+  };
+
   // 使用SWR获取数据，根据防抖后的用户名动态请求
   const { data, error, isLoading } = useSWR<ProfileType>(
     debouncedUsername ? `https://fc-mp-b1a9bc8c-0aab-44ca-9af2-2bd604163a78.next.bspapp.com/profile/${debouncedUsername}` : null,
@@ -143,6 +199,20 @@ export default function Home() {
             </div>
           </div>
 
+          {/* 打印功能区域 */}
+          <div className="flex flex-col gap-3 py-3 px-4">
+            <div>打印功能</div>
+            <button
+              onClick={handlePrint}
+              className="px-4 py-2 bg-green-500 text-white text-sm border border-black hover:bg-green-600 transition-colors font-medium"
+            >
+              🖨️ 打印右侧内容
+            </button>
+            <div className="text-xs text-gray-600">
+              点击按钮打印右侧卡片内容
+            </div>
+          </div>
+
           <Image
             src="/qrcode.png"
             alt="Logo"
@@ -153,6 +223,7 @@ export default function Home() {
           />
         </div>
         <div
+          id="print-area"
           className=" aspect-[210/297] w-[595px] h-[842px] flex flex-col items-center gap-8 bg-white relative"
         >
           <Image
