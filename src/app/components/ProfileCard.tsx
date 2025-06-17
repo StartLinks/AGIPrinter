@@ -50,22 +50,22 @@ export default function ProfileCard({
                     />
                     <div className="flex flex-col gap-5 justify-around">
                         <div className="text-5xl font-bold font-fusion-pixel">{data?.name}</div>
-                        <div className="space-y-1">
+                        <div className="space-y-1 text-2xl font-medium">
                             {(data?.basicInfo?.current_doing && data?.basicInfo?.role) && (
-                                <div className="text-3xl font-medium font-fusion-pixel">
+                                <div className=" font-fusion-pixel">
                                     {`${data.basicInfo.current_doing}@${data.basicInfo.role}`}
                                 </div>
                             )}
                             {data?.basicInfo?.region &&
                                 Object.values(data.basicInfo.region).every(v => v !== undefined && v !== null && v !== "") && (
-                                    <div className="text-2xl font-medium font-fusion-pixel">
+                                    <div className=" font-fusion-pixel">
                                         {Object.values(data.basicInfo.region)
                                             .filter(v => v !== undefined && v !== null && v !== "")
                                             .join("，")}
                                     </div>
                                 )}
                             {data?.basicInfo?.gender && (
-                                <div className="text-2xl font-medium font-fusion-pixel">
+                                <div className=" font-fusion-pixel">
                                     {data.basicInfo.gender}
                                 </div>
                             )}

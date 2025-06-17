@@ -66,7 +66,7 @@ export default function Home() {
     updateNotePosition,
     removeNote
   } = useNotes([
-    { id: 'note-1', text: '来找我玩！😎', position: { x: 345, y: 456 } }
+    { id: 'note-1', text: '来找我玩！😎', position: { x: 345, y: 526 } }
   ]);
 
   // 打印功能
