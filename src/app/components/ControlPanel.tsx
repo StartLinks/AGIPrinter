@@ -82,7 +82,7 @@ export default function ControlPanel({
         const iframe = document.createElement("iframe");
         iframe.style.position = "fixed";
         iframe.style.top = "0";
-        iframe.style.visibility = "hidden";
+        // iframe.style.visibility = "hidden";
         iframe.style.width = printContent.offsetWidth + "px";
         iframe.style.height = printContent.offsetHeight + "px";
         document.body.appendChild(iframe);
@@ -110,7 +110,7 @@ export default function ControlPanel({
         const iframePrintContent = doc?.getElementById("print-area");
 
         // Add a short delay to ensure rendering is complete
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         // Capture with html2canvas-pro on the iframe's print-area
         if (iframePrintContent) {

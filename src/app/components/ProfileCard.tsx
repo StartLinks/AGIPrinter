@@ -174,8 +174,8 @@ export default function ProfileCard({
       <Image
         src="/Sticker.svg"
         alt="Sticker"
-        width={250}
-        height={250}
+        width={120}
+        height={120}
         className="size-48 z-1 absolute bottom-6 right-6"
       />
 
