@@ -20,9 +20,7 @@ export default function DraggableNote({
     initialText = "来找我玩！😎",
     initialPosition = { x: 345, y: 456 },
     onTextChange,
-    onPositionChange,
-    onDelete
-}: DraggableNoteProps) {
+    onPositionChange }: DraggableNoteProps) {
     const [note, setNote] = useState<string>(initialText);
     const [position, setPosition] = useState(initialPosition);
     const [isDragging, setIsDragging] = useState(false);
@@ -79,13 +77,6 @@ export default function DraggableNote({
             onTextChange(id, newText);
         }
     }, [id, onTextChange]);
-
-    // 处理删除
-    const handleDelete = useCallback(() => {
-        if (onDelete) {
-            onDelete(id);
-        }
-    }, [id, onDelete]);
 
     // 添加全局事件监听器
     useEffect(() => {
