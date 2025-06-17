@@ -5,14 +5,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div
-        className=" mx-auto aspect-[210/297] flex flex-col items-center gap-8 bg-white relative"
+        className=" mx-auto aspect-[210/297] border-4 flex flex-col items-center gap-8 bg-white relative"
       >
         <Image
           src="/Menu bar.svg"
           alt="Menu bar"
           width={800}
           height={100}
-          className="w-full"
+          className="w-full h-5"
         />
 
         <div className="flex gap-5 px-6 w-full">
@@ -66,7 +66,7 @@ export default function Home() {
           <div className="w-full border-4 border-black p-2 ">
             <div className="w-full flex border-2 border-black relative items-stretch">
               {/* 左边内容区 */}
-              <div className="flex flex-col duration-300 gap-4 items-center w-8/10 py-9 px-5 my-3 ml-3 border-gray-100 border-y-3">
+              <div className="flex flex-col gap-4 items-center w-8/10 py-9 px-5 my-3 ml-3 border-gray-100 border-y-3">
                 <div className="line-clamp-5 text-xl font-fusion-pixel whitespace-pre-line">
                   👋🏻 Bonjour! 执剑人｜00 后创业 <br />
                   🎨 全干工程师 （产品｜设计｜iOS） <br />
