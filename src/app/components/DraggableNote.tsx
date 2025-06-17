@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import NoStyleTextarea from './NoStyleInput';
+import NoStyleTextarea from './NoStyleTextarea';
 
 interface DraggableNoteProps {
     className?: string;

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import useSWR from 'swr';
+import { useDebounce } from 'use-debounce';
 import DraggableNote from "./components/DraggableNote";
 import NoStyleInput from "./components/NoStyleInput";
 import { ProfileType } from "./type/profile";
@@ -26,6 +27,12 @@ export default function Home() {
     "Design",
     "iOS Dev"
   ]);
+
+  // 用户名输入状态
+  const [username, setUsername] = useState<string>("rabithua");
+
+  // 防抖处理用户名，延迟500ms
+  const [debouncedUsername] = useDebounce(username, 500);
 
   // 便签状态管理
   const [notes, setNotes] = useState<Array<{ id: string; text: string; position: { x: number; y: number } }>>([
@@ -61,9 +68,9 @@ export default function Home() {
     ));
   };
 
-  // 使用SWR获取数据
+  // 使用SWR获取数据，根据防抖后的用户名动态请求
   const { data, error, isLoading } = useSWR<ProfileType>(
-    'https://fc-mp-b1a9bc8c-0aab-44ca-9af2-2bd604163a78.next.bspapp.com/profile/rabithua',
+    debouncedUsername ? `https://fc-mp-b1a9bc8c-0aab-44ca-9af2-2bd604163a78.next.bspapp.com/profile/${debouncedUsername}` : null,
     fetcher,
     {
       revalidateOnFocus: false, // 聚焦时不重新验证
@@ -85,31 +92,32 @@ export default function Home() {
   return (
     <div className=" h-screen flex justify-center bg-blue-800 square-matrix-bg">
       <div className="flex gap-12 my-auto">
-        <Image
-          src="/qrcode.png"
-          alt="Logo"
-          width={100}
-          height={100}
-          className="size-48 border-2 p-3 bg-white border-dashed border-black"
-        />
         <div className="flex h-fit flex-col border-2 border-dashed divide-y-1 divide-black bg-gray-50 font-fusion-pixel">
           <div className="flex flex-col gap-2 py-3  px-4">
             <div>专属链接</div>
             <div className="text-sm opacity-50 flex items-center">
               扫描右侧二维码，复制专属链接
+              {isLoading && <span className="ml-2 text-blue-600">加载中...</span>}
+              {error && <span className="ml-2 text-red-600">加载失败</span>}
             </div>
             <div className="flex items-center">
               https://bonjour.bio/
               <NoStyleInput
                 aria-label="Profile Link"
-                value={data?.profile_link || "rabithua"}
+                value={username}
                 className="border-b border-black px-2 py-1 w-20!"
-                onChange={(e) => {
-                  console.log('Profile Link changed:', e);
+                onChange={(value) => {
+                  setUsername(value);
+                  console.log('Profile Link changed:', value);
                 }}
                 placeholder="rabithua"
               />
             </div>
+            {debouncedUsername !== username && (
+              <div className="text-xs text-gray-500">
+                正在等待输入完成...
+              </div>
+            )}
           </div>
 
           {/* 便签管理区域 */}
@@ -134,6 +142,15 @@ export default function Home() {
               当前便签数量: {notes.length}
             </div>
           </div>
+
+          <Image
+            src="/qrcode.png"
+            alt="Logo"
+            width={100}
+            height={100}
+            className="size-48 my-5 mx-auto border-2 p-3 bg-white rounded-3xl"
+            style={{ boxShadow: '0 0 25px rgba(255, 255, 255, 0.8)' }}
+          />
         </div>
         <div
           className=" aspect-[210/297] w-[595px] h-[842px] flex flex-col items-center gap-8 bg-white relative"
@@ -153,7 +170,7 @@ export default function Home() {
                 alt="Placeholder"
                 width={200}
                 height={200}
-                className="size-40 rounded-full shrink-0 border border-black"
+                className="size-40 object-cover rounded-full shrink-0 border border-black"
               />
               <div className="flex flex-col gap-5 justify-around">
                 <div className="text-5xl font-bold font-fusion-pixel">{data?.name}</div>
@@ -209,7 +226,7 @@ export default function Home() {
             <div className="w-full border-4 border-black p-2 ">
               <div className="w-full flex border-2 border-black relative items-stretch">
                 {/* 左边内容区 */}
-                <div className="flex flex-col duration-300 gap-4 items-center w-8/10 py-9 px-5 my-3 ml-3 border-gray-100 border-y-3">
+                <div className="flex flex-col duration-300 gap-4 w-8/10 py-9 px-5 my-3 ml-3 border-gray-100 border-y-3">
                   <div className="line-clamp-5 text-xl font-fusion-pixel whitespace-pre-line">
                     {
                       data?.description || "This is a placeholder description. Please update your profile with a meaningful description."
