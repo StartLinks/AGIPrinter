@@ -12,7 +12,7 @@ export default function NoStyleInput({
 }) {
   return <input
     aria-label="No Style Input"
-    defaultValue={value}
+    value={value}
     onChange={(e) => onChange(e.target.value)}
     placeholder={placeholder}
     className={`bg-transparent outline-none w-auto ${className}`}

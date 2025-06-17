@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import NoStyleInput from "./NoStyleInput";
 
 interface ControlPanelProps {
@@ -26,11 +27,49 @@ export default function ControlPanel({
     onRemoveNote,
     onPrint
 }: ControlPanelProps) {
+    // 显示URL提取提示的状态
+    const [showUrlExtractedTip, setShowUrlExtractedTip] = useState(false);
+
+    // 处理用户名变化，支持自动截取完整URL
+    const handleUsernameChange = (value: string) => {
+        // 支持多种格式的bonjour.bio链接
+        const bonjourUrlPatterns = [
+            /^https?:\/\/bonjour\.bio\/([a-zA-Z0-9_-]+)$/,  // 标准格式
+            /^https?:\/\/www\.bonjour\.bio\/([a-zA-Z0-9_-]+)$/,  // 带www
+            /^bonjour\.bio\/([a-zA-Z0-9_-]+)$/,  // 不带协议
+            /^www\.bonjour\.bio\/([a-zA-Z0-9_-]+)$/  // 不带协议但有www
+        ];
+
+        let extractedUsername = null;
+
+        // 尝试匹配各种格式
+        for (const pattern of bonjourUrlPatterns) {
+            const match = value.trim().match(pattern);
+            if (match) {
+                extractedUsername = match[1];
+                break;
+            }
+        }
+
+        if (extractedUsername) {
+            // 如果是完整链接，提取用户名部分
+            onUsernameChange(extractedUsername);
+            console.log('从完整链接中提取用户名:', extractedUsername);
+
+            // 显示提取成功提示
+            setShowUrlExtractedTip(true);
+            setTimeout(() => setShowUrlExtractedTip(false), 3000);
+        } else {
+            // 否则直接使用输入值
+            onUsernameChange(value);
+            console.log('Profile Link changed:', value);
+        }
+    };
     return (
         <div className="flex h-fit flex-col border-2 border-dashed divide-y-1 divide-black bg-gray-50 font-fusion-pixel">
             {/* 专属链接区域 */}
             <div className="flex flex-col gap-2 py-3 px-4 w-100">
-                <div>专属链接</div>
+                <div className="font-semibold">专属链接</div>
                 <div className="text-sm opacity-50 flex items-center flex-wrap">
                     扫描小程序码，复制专属链接
                     {isLoading && <span className="ml-2 text-blue-600">加载中...</span>}
@@ -47,8 +86,7 @@ export default function ControlPanel({
                         value={username}
                         className="border-b border-black px-2 py-1 w-20!"
                         onChange={(value) => {
-                            onUsernameChange(value);
-                            console.log('Profile Link changed:', value);
+                            handleUsernameChange(value);
                         }}
                         placeholder="rabithua"
                     />
@@ -56,6 +94,13 @@ export default function ControlPanel({
                 {debouncedUsername !== username && (
                     <div className="text-xs text-gray-500">
                         正在等待输入完成...
+                    </div>
+                )}
+
+                {/* URL提取成功提示 */}
+                {showUrlExtractedTip && (
+                    <div className="text-xs text-green-600 flex items-center gap-1">
+                        ✅ 已自动提取用户名
                     </div>
                 )}
 
@@ -78,9 +123,9 @@ export default function ControlPanel({
 
             {/* 便签管理区域 */}
             <div className="flex flex-col gap-3 py-3 px-4">
-                <div>便签管理</div>
+                <div className="font-semibold">便签管理</div>
                 <div className="text-sm opacity-50">
-                    便签点击可以输入内容，拖拽调整位置
+                    便签点击可以输入内容，拖拽调整位置或输入框高度
                 </div>
                 <div className="flex gap-2">
                     <button
@@ -104,7 +149,7 @@ export default function ControlPanel({
 
             {/* 打印功能区域 */}
             <div className="flex flex-col gap-3 py-3 px-4">
-                <div>打印功能</div>
+                <div className="font-semibold">打印功能</div>
                 <button
                     onClick={onPrint}
                     className="px-4 py-2 bg-green-500 text-white text-sm border border-black hover:bg-green-600 transition-colors font-medium"

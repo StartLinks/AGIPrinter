@@ -30,6 +30,9 @@ const fetcher = async (url: string) => {
 
     const data = await response.json();
     console.log('SWR获取到的用户资料数据:', data);
+    if (!data.success) {
+      throw new Error('数据获取失败，请稍后重试');
+    }
     return data.data;
   } catch (error) {
     // 处理网络错误
