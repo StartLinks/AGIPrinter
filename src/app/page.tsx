@@ -60,6 +60,7 @@ export default function Home() {
       note.id === noteId ? { ...note, position } : note
     ));
   };
+
   // 使用SWR获取数据
   const { data, error, isLoading } = useSWR<ProfileType>(
     'https://fc-mp-b1a9bc8c-0aab-44ca-9af2-2bd604163a78.next.bspapp.com/profile/rabithua',
@@ -95,14 +96,7 @@ export default function Home() {
           <div className="flex flex-col gap-2 py-3  px-4">
             <div>专属链接</div>
             <div className="text-sm opacity-50 flex items-center">
-              打开 Bonjour数字名片小程序 - 我 - 左上角礼物图标 <Image
-                src="https://cdn.bonjour.bio/static/menu/gift.svg"
-                alt="Gift Icon"
-                width={16}
-                height={16}
-                className="inline-block mx-1"
-              />
-              - 复制专属链接
+              扫描右侧二维码，复制专属链接
             </div>
             <div className="flex items-center">
               https://bonjour.bio/
@@ -112,8 +106,7 @@ export default function Home() {
                 className="border-b border-black px-2 py-1 w-20!"
                 onChange={(e) => {
                   console.log('Profile Link changed:', e);
-                }
-                }
+                }}
                 placeholder="rabithua"
               />
             </div>
