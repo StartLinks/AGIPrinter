@@ -74,7 +74,7 @@ export default function Home() {
 
   // 使用SWR获取数据，根据防抖后的用户名动态请求
   const { data, error, isLoading } = useSWR<ProfileType>(
-    debouncedUsername ? `https://fc-mp-b1a9bc8c-0aab-44ca-9af2-2bd604163a78.next.bspapp.com/profile/${debouncedUsername}` : null,
+    debouncedUsername ? `/api/profile/${debouncedUsername}` : null,
     fetcher,
     {
       revalidateOnFocus: false, // 聚焦时不重新验证
