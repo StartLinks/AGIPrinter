@@ -140,8 +140,9 @@ export default function ControlPanel({
       } else {
         setApiError(data.error || "API调用失败");
       }
-    } catch (e: any) {
-      setApiError(e.message || "网络错误");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setApiError(error.message || "网络错误");
       setApiImageBase64(null);
     } finally {
       setApiLoading(false);
