@@ -171,6 +171,14 @@ export default function ProfileCard({
         className=" w-15 absolute bottom-36 left-60"
       />
 
+      <Image
+        src="/hand.svg"
+        alt="Hand"
+        width={100}
+        height={100}
+        className="absolute bottom-5 left-36 size-10"
+      />
+
       <div className="flex flex-col gap-2 items-center z-1 absolute bottom-6 right-6">
         <Image
           src="/Sticker.svg"
