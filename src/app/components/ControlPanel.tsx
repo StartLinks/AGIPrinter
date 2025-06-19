@@ -36,6 +36,9 @@ export default function ControlPanel({
   // 显示URL提取提示的状态
   const [showUrlExtractedTip, setShowUrlExtractedTip] = useState(false);
 
+  // 自动打印开关状态
+  const [autoPrintEnabled, setAutoPrintEnabled] = useState(false);
+
   // 新增：API调用相关状态
   const [apiResult, setApiResult] = useState<string | null>(null);
   const [apiLoading, setApiLoading] = useState(false);
@@ -81,8 +84,8 @@ export default function ControlPanel({
 
   // 监听用户名变化并在数据加载完成后自动打印
   useEffect(() => {
-    // 只有在不是加载状态、没有错误、且用户名存在时才自动打印
-    if (!isLoading && !error && debouncedUsername && debouncedUsername !== '') {
+    // 只有在开启自动打印、不是加载状态、没有错误、且用户名存在时才自动打印
+    if (autoPrintEnabled && !isLoading && !error && debouncedUsername && debouncedUsername !== '') {
       // 延迟一点时间确保页面完全渲染
       const timer = setTimeout(() => {
         console.log('数据加载完成，自动触发打印...');
@@ -91,7 +94,7 @@ export default function ControlPanel({
 
       return () => clearTimeout(timer);
     }
-  }, [isLoading, error, debouncedUsername]); // 监听这些状态的变化
+  }, [autoPrintEnabled, isLoading, error, debouncedUsername]); // 监听这些状态的变化
 
   // Link 轮询
   const { startPolling, stopPolling } = useLinkPolling({
@@ -357,6 +360,26 @@ export default function ControlPanel({
       {/* 打印功能区域 */}
       <div className="flex flex-col gap-3 py-3 px-4">
         <div className="font-semibold">打印功能</div>
+
+        {/* 自动打印开关 */}
+        <div className="flex items-center justify-between p-2 bg-gray-100 rounded border">
+          <div className="flex flex-col">
+            <span className="text-sm font-medium">自动打印</span>
+            <span className="text-xs text-gray-600">检测到用户变化时自动打印</span>
+          </div>
+          <button
+            onClick={() => setAutoPrintEnabled(!autoPrintEnabled)}
+            aria-label={`${autoPrintEnabled ? '关闭' : '开启'}自动打印`}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${autoPrintEnabled ? 'bg-blue-600' : 'bg-gray-300'
+              }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${autoPrintEnabled ? 'translate-x-6' : 'translate-x-1'
+                }`}
+            />
+          </button>
+        </div>
+
         <button
           onClick={onPrint}
           className="px-4 py-2 bg-green-500 text-white text-sm border border-black hover:bg-green-600 transition-colors font-medium"

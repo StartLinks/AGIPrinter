@@ -160,7 +160,7 @@ export default function ProfileCard({
         alt="AGI Folder"
         width={105 * 0.8}
         height={61}
-        className="h-20 w-25 absolute bottom-12 left-20"
+        className=" w-25 absolute bottom-12 left-20"
       />
 
       <Image
@@ -168,7 +168,7 @@ export default function ProfileCard({
         alt="Bonjour Folder"
         width={61 * 0.8}
         height={61}
-        className="h-20 w-16 absolute bottom-36 left-60"
+        className=" w-15 absolute bottom-36 left-60"
       />
 
       <div className="flex flex-col gap-2 items-center z-1 absolute bottom-6 right-6">
