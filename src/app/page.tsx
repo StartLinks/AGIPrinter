@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
 import ControlPanel from "./components/ControlPanel";
@@ -9,7 +9,6 @@ import SkeletonProfileCard from "./components/SkeletonProfileCard";
 import { useNotes } from "./hooks/useNotes";
 import { usePageState } from "./hooks/usePageState";
 import { usePrint } from "./hooks/usePrint";
-import { useLinkPolling } from "./hooks/useLinkPolling";
 import { ProfileType } from "./type/profile";
 
 // SWR fetcher函数
@@ -73,66 +72,6 @@ export default function Home() {
   // 打印功能
   const { handlePrint } = usePrint();
 
-  // 处理 link 变化的函数
-  const handleLink = (link: string) => {
-    if (!link) {
-      // 清空状态
-      document.body.classList.remove("is-loading");
-      document.body.classList.remove("has-profile");
-      const qrCodeCanvas = document.getElementById("qrCodeCanvas");
-      if (qrCodeCanvas) {
-        qrCodeCanvas.innerHTML = "";
-      }
-      return;
-    }
-
-    // 设置加载状态
-    document.body.classList.add("is-loading");
-
-    // 处理新的 link
-    console.log('处理新的 link:', link);
-
-    // 这里可以根据 link 的内容来决定是获取用户资料还是其他操作
-    // 如果是用户名，可以更新 username 状态
-    if (link.startsWith('http') || link.startsWith('https')) {
-      // 如果是完整的 URL，可能需要解析出用户名或其他信息
-      console.log('处理 URL:', link);
-    } else {
-      // 如果是用户名，直接设置
-      setUsername(link);
-    }
-
-    // 移除加载状态并添加有资料状态
-    setTimeout(() => {
-      document.body.classList.remove("is-loading");
-      document.body.classList.add("has-profile");
-    }, 1000);
-  };
-
-  // Link 轮询
-  const { startPolling, stopPolling } = useLinkPolling({
-    interval: 2000, // 每2秒轮询一次
-    onLinkChange: handleLink,
-    onError: (error) => {
-      console.error("Link polling error:", error);
-      document.body.classList.remove("is-loading");
-      document.body.classList.remove("has-profile");
-      const qrCodeCanvas = document.getElementById("qrCodeCanvas");
-      if (qrCodeCanvas) {
-        qrCodeCanvas.innerHTML = "";
-      }
-    }
-  });
-
-  // 组件挂载时开始轮询
-  useEffect(() => {
-    startPolling();
-
-    // 组件卸载时停止轮询
-    return () => {
-      stopPolling();
-    };
-  }, [startPolling, stopPolling]);
 
   // 使用SWR获取数据，根据防抖后的用户名动态请求
   const { data, error, isLoading } = useSWR<ProfileType>(

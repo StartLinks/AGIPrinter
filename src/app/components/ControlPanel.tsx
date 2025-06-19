@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NoStyleInput from "./NoStyleInput";
 import html2canvas from "html2canvas-pro";
+import { useLinkPolling } from "../hooks/useLinkPolling";
 
 interface ControlPanelProps {
   username: string;
@@ -39,7 +40,83 @@ export default function ControlPanel({
   const [apiResult, setApiResult] = useState<string | null>(null);
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [apiImageBase64, setApiImageBase64] = useState<string | null>(null);
+  const [_apiImageBase64, setApiImageBase64] = useState<string | null>(null);
+
+
+  // 处理 link 变化的函数
+  const handleLink = (link: string) => {
+    if (!link) {
+      // 清空状态
+      document.body.classList.remove("is-loading");
+      document.body.classList.remove("has-profile");
+      const qrCodeCanvas = document.getElementById("qrCodeCanvas");
+      if (qrCodeCanvas) {
+        qrCodeCanvas.innerHTML = "";
+      }
+      return;
+    }
+
+    // 设置加载状态
+    document.body.classList.add("is-loading");
+
+    // 处理新的 link
+    console.log('处理新的 link:', link);
+
+    // 这里可以根据 link 的内容来决定是获取用户资料还是其他操作
+    // 如果是用户名，可以更新 username 状态
+    if (link.startsWith('http') || link.startsWith('https')) {
+      // 如果是完整的 URL，可能需要解析出用户名或其他信息
+      console.log('处理 URL:', link);
+    } else {
+      // 如果是用户名，直接设置
+      onUsernameChange(link);
+    }
+
+    // 移除加载状态并添加有资料状态
+    setTimeout(() => {
+      document.body.classList.remove("is-loading");
+      document.body.classList.add("has-profile");
+    }, 1000);
+  };
+
+  // 监听用户名变化并在数据加载完成后自动打印
+  useEffect(() => {
+    // 只有在不是加载状态、没有错误、且用户名存在时才自动打印
+    if (!isLoading && !error && debouncedUsername && debouncedUsername !== '') {
+      // 延迟一点时间确保页面完全渲染
+      const timer = setTimeout(() => {
+        console.log('数据加载完成，自动触发打印...');
+        handleCallApi();
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, error, debouncedUsername]); // 监听这些状态的变化
+
+  // Link 轮询
+  const { startPolling, stopPolling } = useLinkPolling({
+    interval: 2000, // 每2秒轮询一次
+    onLinkChange: handleLink,
+    onError: (error) => {
+      console.error("Link polling error:", error);
+      document.body.classList.remove("is-loading");
+      document.body.classList.remove("has-profile");
+      const qrCodeCanvas = document.getElementById("qrCodeCanvas");
+      if (qrCodeCanvas) {
+        qrCodeCanvas.innerHTML = "";
+      }
+    }
+  });
+
+  // 组件挂载时开始轮询
+  useEffect(() => {
+    startPolling();
+
+    // 组件卸载时停止轮询
+    return () => {
+      stopPolling();
+    };
+  }, [startPolling, stopPolling]);
 
   // 调用API的函数
   const handleCallApi = async () => {
@@ -72,7 +149,7 @@ export default function ControlPanel({
               return Array.from(styleSheet.cssRules)
                 .map((rule) => rule.cssText)
                 .join("");
-            } catch (e) {
+            } catch {
               return "";
             }
           })
