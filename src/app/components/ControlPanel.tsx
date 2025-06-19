@@ -225,13 +225,12 @@ export default function ControlPanel({
         {debouncedUsername && (
           <div className="flex items-center gap-2 text-xs">
             <div
-              className={`w-2 h-2 rounded-full ${
-                isLoading
-                  ? "bg-blue-500 animate-pulse"
-                  : error
-                    ? "bg-red-500"
-                    : "bg-green-500"
-              }`}
+              className={`w-2 h-2 rounded-full ${isLoading
+                ? "bg-blue-500 animate-pulse"
+                : error
+                  ? "bg-red-500"
+                  : "bg-green-500"
+                }`}
             />
             <span
               className={
@@ -298,13 +297,13 @@ export default function ControlPanel({
           {apiLoading ? "正在调用API..." : "调用打印API (测试)"}
         </button>
         {apiResult && (
-          <div className="text-xs text-green-700 bg-green-50 border border-green-300 rounded px-2 py-1 mt-1">
+          <div className="text-xs text-green-700 bg-green-50 border border-green-300 rounded px-2 py-1 mt-1 break-words overflow-hidden max-w-sm">
             API输出: {apiResult}
           </div>
         )}
 
         {apiError && (
-          <div className="text-xs text-red-700 bg-red-50 border border-red-300 rounded px-2 py-1 mt-1">
+          <div className="text-xs text-red-700 bg-red-50 border border-red-300 rounded px-2 py-1 mt-1 break-words overflow-hidden max-w-sm">
             API错误: {apiError}
           </div>
         )}
