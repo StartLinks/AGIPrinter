@@ -177,7 +177,7 @@ export default function ProfileCard({
           alt="Sticker"
           width={120}
           height={120}
-          className="size-42"
+          className="size-32"
         />
         <div className="text-xl font-fusion-pixel">手机 NFC 贴贴</div>
       </div>
