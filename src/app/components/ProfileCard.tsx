@@ -160,7 +160,7 @@ export default function ProfileCard({
         alt="AGI Folder"
         width={105 * 0.8}
         height={61}
-        className="h-12 absolute bottom-12 left-10"
+        className="h-20 w-25 absolute bottom-12 left-20"
       />
 
       <Image
@@ -168,19 +168,22 @@ export default function ProfileCard({
         alt="Bonjour Folder"
         width={61 * 0.8}
         height={61}
-        className="h-12 absolute bottom-36 left-44"
+        className="h-20 w-16 absolute bottom-36 left-60"
       />
 
-      <Image
-        src="/Sticker.svg"
-        alt="Sticker"
-        width={120}
-        height={120}
-        className="size-48 z-1 absolute bottom-6 right-6"
-      />
+      <div className="flex flex-col gap-2 items-center z-1 absolute bottom-6 right-6">
+        <Image
+          src="/Sticker.svg"
+          alt="Sticker"
+          width={120}
+          height={120}
+          className="size-42"
+        />
+        <div className="text-xl font-fusion-pixel">手机 NFC 贴贴</div>
+      </div>
 
       {/* 便签组件 */}
-      {notes.map((note) => (
+      {/* {notes.map((note) => (
         <DraggableNote
           key={note.id}
           id={note.id}
@@ -190,7 +193,27 @@ export default function ProfileCard({
           onPositionChange={onUpdateNotePosition}
           onDelete={onRemoveNote}
         />
-      ))}
+      ))} */}
+
+
+      <DraggableNote
+        id="note-1"
+        initialText={"快来和我添加友链!👇"}
+        initialPosition={{
+          x: 345,
+          y: 526,
+        }}
+      />
+
+
+      <DraggableNote
+        id="note-1"
+        initialText={"来找我玩！😎"}
+        initialPosition={{
+          x: 44,
+          y: 588,
+        }}
+      />
     </div>
   );
 }
