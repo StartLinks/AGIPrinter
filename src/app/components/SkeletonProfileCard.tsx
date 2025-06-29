@@ -20,7 +20,7 @@ export default function SkeletonProfileCard({
       <div className="flex mt-10 items-center gap-5 px-6 w-full">
         <div className="flex gap-5 items-center">
           {/* 头像骨架屏 */}
-          <div className="size-40 rounded-full shrink-0 border border-black bg-gray-200 skeleton-pulse" />
+          <div className="size-40 rounded-full shrink-0 bg-gray-200 skeleton-pulse" />
 
           <div className="flex flex-col gap-5 justify-around">
             {/* 名字骨架屏 */}
