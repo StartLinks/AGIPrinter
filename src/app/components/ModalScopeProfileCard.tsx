@@ -147,8 +147,8 @@ export default function ModalScopeProfileCard({
       <Image
         src="/hand.svg"
         alt="Hand"
-        width={100}
-        height={100}
+        width={200}
+        height={200}
         className="absolute bottom-5 left-47 size-10"
       />
 
