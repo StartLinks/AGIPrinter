@@ -4,7 +4,7 @@ import { useState } from "react";
 import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
 import ControlPanel from "./components/ControlPanel";
-import ProfileCard from "./components/ProfileCard";
+import ModalScopeProfileCard from "./components/ModalScopeProfileCard";
 import SkeletonProfileCard from "./components/SkeletonProfileCard";
 import { useNotes } from "./hooks/useNotes";
 import { usePageState } from "./hooks/usePageState";
@@ -133,13 +133,9 @@ export default function Home() {
 
     // 正常状态
     return (
-      <ProfileCard
+      <ModalScopeProfileCard
         data={data}
         tags={tags}
-        notes={notes}
-        onUpdateNote={updateNote}
-        onUpdateNotePosition={updateNotePosition}
-        onRemoveNote={removeNote}
       />
     );
   };

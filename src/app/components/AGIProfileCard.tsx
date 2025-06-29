@@ -20,7 +20,7 @@ interface ProfileCardProps {
   onRemoveNote: (noteId: string) => void;
 }
 
-export default function ProfileCard({
+export default function AGIProfileCard({
   data,
   tags,
   notes,
