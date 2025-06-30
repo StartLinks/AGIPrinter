@@ -22,7 +22,28 @@ export default function ModalScopeProfileCard({
         animationFillMode: "both",
       }}
     >
-      <div className="flex mt-12 items-center gap-5 px-6 w-full">
+      <div className="-mb-10">
+        <Image
+          src="/modalScope/menuBar.png"
+          alt="Menu bar"
+          width={595}
+          height={20}
+          className="w-full"
+        />
+        <div className="flex justify-between w-full">
+          <div className="w-8 h-10 relative">
+            <div className="w-8 h-5 bg-teal-400" />
+            <div className="w-5 h-5 bg-indigo-500" />
+          </div>
+          <div className="w-8 h-10 relative flex flex-col items-end">
+            <div className="w-8 h-5 bg-teal-400" />
+            <div className="w-5 h-5 bg-indigo-500" />
+          </div>
+        </div>
+      </div>
+
+
+      <div className="flex items-center gap-5 px-6 w-full">
         <div className="flex gap-5 items-center">
           <Image
             src={
@@ -73,7 +94,7 @@ export default function ModalScopeProfileCard({
                 height={3000}
                 className="size-12 object-contain"
               />
-              <div className="text-sm font-medium ">
+              <div className="text-sm font-medium text-nowrap">
                 {tag}
               </div>
             </div>
@@ -161,6 +182,20 @@ export default function ModalScopeProfileCard({
           className="size-32"
         />
         <div className="text-xl text-[#624AFF]">手机 NFC 贴贴</div>
+      </div>
+
+
+      <div className="w-5 h-5 bg-teal-400 absolute bottom-12 left-24" />
+
+      <div className="flex fixed bottom-0 justify-between w-full">
+        <div className="w-8 h-10 relative">
+          <div className="w-5 h-5 bg-indigo-500" />
+          <div className="w-8 h-5 bg-teal-400" />
+        </div>
+        <div className="w-8 h-10 relative flex flex-col items-end">
+          <div className="w-5 h-5 bg-indigo-500" />
+          <div className="w-8 h-5 bg-teal-400" />
+        </div>
       </div>
     </div>
   );
