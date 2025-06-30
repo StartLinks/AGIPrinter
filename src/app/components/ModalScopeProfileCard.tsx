@@ -110,7 +110,7 @@ export default function ModalScopeProfileCard({
         className="w-[calc(100%-3rem)] -mt-20"
       />
 
-      <div className="w-[calc(100%-3rem)] relative bg-[#F7F7F7] rounded-xl space-y-4 py-6 px-5">
+      <div className="w-[calc(100%-3rem)] relative bg-[#EDF3FF] rounded-xl space-y-4 py-6 px-5">
         <div className="line-clamp-5 text-xl font-semibold whitespace-pre-line">
           {data?.description ||
             "This is a placeholder description. Please update your profile with a meaningful description."}
@@ -181,7 +181,7 @@ export default function ModalScopeProfileCard({
           height={120}
           className="size-32"
         />
-        <div className="text-xl text-[#624AFF]">手机 NFC 贴贴</div>
+        <div className="text-xl text-nowrap text-[#624AFF]">手机 NFC 贴贴</div>
       </div>
 
 
