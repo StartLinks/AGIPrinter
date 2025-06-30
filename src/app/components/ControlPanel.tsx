@@ -3,8 +3,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import NoStyleInput from "./NoStyleInput";
-import html2canvas from "html2canvas-pro";
 import { useLinkPolling } from "../hooks/useLinkPolling";
+import { snapdom } from "@zumer/snapdom";
 
 interface ControlPanelProps {
   username: string;
@@ -130,82 +130,44 @@ export default function ControlPanel({
     try {
       // 获取 print-area 的 base64 图片
       const printContent = document.getElementById("print-area");
-      let imageBase64 = "";
-      if (printContent) {
-        // Remove animation and transition styles/classes recursively before capture
-        function removeAnimations(element: HTMLElement) {
-          element.style.animation = "none";
-          element.style.transition = "none";
-          element.classList.forEach((cls) => {
-            if (cls.startsWith("animate-")) element.classList.remove(cls);
-          });
-          Array.from(element.children).forEach((child) =>
-            removeAnimations(child as HTMLElement),
-          );
-        }
-        removeAnimations(printContent);
-
-        // Collect all CSS rules
-        const styles = Array.from(document.styleSheets)
-          .map((styleSheet) => {
-            try {
-              return Array.from(styleSheet.cssRules)
-                .map((rule) => rule.cssText)
-                .join("");
-            } catch {
-              return "";
-            }
-          })
-          .join("");
-
-        // Create a hidden iframe
-        const iframe = document.createElement("iframe");
-        iframe.style.position = "fixed";
-        iframe.style.top = "0";
-        // iframe.style.visibility = "hidden";
-        iframe.style.width = printContent.offsetWidth + "px";
-        iframe.style.height = printContent.offsetHeight + "px";
-        document.body.appendChild(iframe);
-
-        // Write full HTML into the iframe
-        const doc = iframe.contentDocument || iframe.contentWindow?.document;
-        if (doc) {
-          doc.open();
-          doc.write(`
-            <!DOCTYPE html>
-            <html>
-              <head>
-                <style>${styles}</style>
-              </head>
-              <body style="margin:0;padding:0;">
-                ${printContent.outerHTML}
-              </body>
-            </html>
-          `);
-          doc.close();
-        }
-
-        // Wait for iframe to load
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const iframePrintContent = doc?.getElementById("print-area");
-
-        // Add a short delay to ensure rendering is complete
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        // Capture with html2canvas-pro on the iframe's print-area
-        if (iframePrintContent) {
-          const canvas = await html2canvas(iframePrintContent as HTMLElement, {
-            useCORS: true,
-            backgroundColor: null,
-          });
-          imageBase64 = canvas.toDataURL("image/png");
-          setApiImageBase64(imageBase64);
-        }
-
-        // Clean up: remove the iframe
-        document.body.removeChild(iframe);
+      if (!printContent) {
+        setApiError("未找到打印区域");
+        setApiLoading(false);
+        return;
       }
-
+      let result;
+      try {
+        result = await snapdom(printContent, { scale: 2 });
+      } catch (e) {
+        const msg = (e && typeof e === 'object' && 'message' in e) ? (e as { message: string }).message : String(e);
+        setApiError("截图失败: " + msg);
+        setApiLoading(false);
+        return;
+      }
+      let imageBase64 = "";
+      try {
+        // snapdom 的 toPng() 返回 HTMLImageElement，需要转为 base64
+        const imgElem = await result.toPng();
+        // 创建 canvas 并绘制图片
+        const canvas = document.createElement('canvas');
+        canvas.width = imgElem.width;
+        canvas.height = imgElem.height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(imgElem, 0, 0);
+          imageBase64 = canvas.toDataURL('image/png');
+        } else {
+          setApiError("无法获取 canvas 上下文");
+          setApiLoading(false);
+          return;
+        }
+      } catch (e) {
+        const msg = (e && typeof e === 'object' && 'message' in e) ? (e as { message: string }).message : String(e);
+        setApiError("图片转码失败: " + msg);
+        setApiLoading(false);
+        return;
+      }
+      setApiImageBase64(imageBase64);
       // 发送 base64 到 API
       const res = await fetch("/api/run-command", {
         method: "POST",

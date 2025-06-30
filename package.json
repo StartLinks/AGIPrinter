@@ -9,9 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@zumer/snapdom": "^1.7.1",
     "canvas": "^3.1.0",
-    "html2canvas": "^1.4.1",
-    "html2canvas-pro": "^1.5.11",
     "next": "15.3.3",
     "node-html-to-image": "^5.0.0",
     "react": "^19.0.0",

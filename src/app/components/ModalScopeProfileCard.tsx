@@ -27,7 +27,7 @@ export default function ModalScopeProfileCard({
           <Image
             src={
               data?.avatar ||
-              "https://cdn.bonjour.bio/static/image/defaultAvatar.svg"
+              "https://cdn.bonjour.bio/static/image/defaultAvatar.png"
             }
             alt="Placeholder"
             width={200}
@@ -67,11 +67,11 @@ export default function ModalScopeProfileCard({
           {tags.map((tag, index) => (
             <div key={index} className="flex flex-col items-center">
               <Image
-                src="/modalScope/folder.svg"
+                src="/modalScope/folder.png"
                 alt="Folder"
-                width={50}
-                height={50}
-                className="w-12 h-12"
+                width={3900}
+                height={3000}
+                className="size-12 object-contain"
               />
               <div className="text-sm font-medium ">
                 {tag}
@@ -82,7 +82,7 @@ export default function ModalScopeProfileCard({
       </div>
 
       <Image
-        src="/modalScope/tabbar.svg"
+        src="/modalScope/tabbar.png"
         alt="Tab"
         width={800}
         height={100}
@@ -96,16 +96,16 @@ export default function ModalScopeProfileCard({
         </div>
         <div className="bg-white w-fit border text-xl items-center font-semibold border-black rounded-xl px-4.5 py-2 flex gap-3">
           <Image
-            src="/modalScope/face.svg"
+            src="/modalScope/face.png"
             alt="face"
-            width={24}
-            height={24}
-            className="size-8"
+            width={320}
+            height={170}
+            className="w-8 h-4 object-cover"
           />
           添加友链
         </div>
         <Image
-          src="/modalScope/arrowRT.svg"
+          src="/modalScope/arrowRT.png"
           alt="QR Code"
           width={200}
           height={200}
@@ -114,16 +114,16 @@ export default function ModalScopeProfileCard({
       </div>
 
       <Image
-        src="/modalScope/face.svg"
+        src="/modalScope/face.png"
         alt="face"
-        width={200}
-        height={200}
-        className="size-30 absolute bottom-24 left-8"
+        width={640}
+        height={340}
+        className="w-32 h-16 object-cover absolute bottom-32 left-8"
       />
 
       <div className="absolute bottom-12 left-35 flex items-center gap-2 flex-col">
         <Image
-          src="/modalScope/folder.svg"
+          src="/modalScope/folder.png"
           alt="Bonjour Folder"
           width={61 * 0.8}
           height={61}
@@ -134,7 +134,7 @@ export default function ModalScopeProfileCard({
 
       <div className="absolute bottom-36 left-60 flex items-center gap-2 flex-col">
         <Image
-          src="/modalScope/folder.svg"
+          src="/modalScope/folder.png"
           alt="Bonjour Folder"
           width={61 * 0.8}
           height={61}
@@ -145,7 +145,7 @@ export default function ModalScopeProfileCard({
 
 
       <Image
-        src="/hand.svg"
+        src="/modalScope/hand.png"
         alt="Hand"
         width={200}
         height={200}
@@ -154,7 +154,7 @@ export default function ModalScopeProfileCard({
 
       <div className="flex flex-col gap-2 items-center z-1 absolute bottom-12 right-10">
         <Image
-          src="/modalScope/Sticker.svg"
+          src="/modalScope/Sticker.png"
           alt="Sticker"
           width={120}
           height={120}
