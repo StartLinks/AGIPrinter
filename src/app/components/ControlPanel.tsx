@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import NoStyleInput from "./NoStyleInput";
-import { useLinkPolling } from "../hooks/useLinkPolling";
 import { snapdom } from "@zumer/snapdom";
 
 interface ControlPanelProps {
@@ -45,43 +44,6 @@ export default function ControlPanel({
   const [apiError, setApiError] = useState<string | null>(null);
   const [_apiImageBase64, setApiImageBase64] = useState<string | null>(null);
 
-
-  // 处理 link 变化的函数
-  const handleLink = (link: string) => {
-    if (!link) {
-      // 清空状态
-      document.body.classList.remove("is-loading");
-      document.body.classList.remove("has-profile");
-      const qrCodeCanvas = document.getElementById("qrCodeCanvas");
-      if (qrCodeCanvas) {
-        qrCodeCanvas.innerHTML = "";
-      }
-      return;
-    }
-
-    // 设置加载状态
-    document.body.classList.add("is-loading");
-
-    // 处理新的 link
-    console.log('处理新的 link:', link);
-
-    // 这里可以根据 link 的内容来决定是获取用户资料还是其他操作
-    // 如果是用户名，可以更新 username 状态
-    if (link.startsWith('http') || link.startsWith('https')) {
-      // 如果是完整的 URL，可能需要解析出用户名或其他信息
-      console.log('处理 URL:', link);
-    } else {
-      // 如果是用户名，直接设置
-      onUsernameChange(link);
-    }
-
-    // 移除加载状态并添加有资料状态
-    setTimeout(() => {
-      document.body.classList.remove("is-loading");
-      document.body.classList.add("has-profile");
-    }, 1000);
-  };
-
   // 监听用户名变化并在数据加载完成后自动打印
   useEffect(() => {
     // 只有在开启自动打印、不是加载状态、没有错误、且用户名存在时才自动打印
@@ -96,30 +58,6 @@ export default function ControlPanel({
     }
   }, [autoPrintEnabled, isLoading, error, debouncedUsername]); // 监听这些状态的变化
 
-  // Link 轮询
-  const { startPolling, stopPolling } = useLinkPolling({
-    interval: 2000, // 每2秒轮询一次
-    onLinkChange: handleLink,
-    onError: (error) => {
-      console.error("Link polling error:", error);
-      document.body.classList.remove("is-loading");
-      document.body.classList.remove("has-profile");
-      const qrCodeCanvas = document.getElementById("qrCodeCanvas");
-      if (qrCodeCanvas) {
-        qrCodeCanvas.innerHTML = "";
-      }
-    }
-  });
-
-  // 组件挂载时开始轮询
-  useEffect(() => {
-    startPolling();
-
-    // 组件卸载时停止轮询
-    return () => {
-      stopPolling();
-    };
-  }, [startPolling, stopPolling]);
 
   // 调用API的函数
   const handleCallApi = async () => {
@@ -294,7 +232,7 @@ export default function ControlPanel({
       </div>
 
       {/* 便签管理区域 */}
-      <div className="flex flex-col gap-3 py-3 px-4">
+      {/* <div className="flex flex-col gap-3 py-3 px-4">
         <div className="font-semibold">便签管理</div>
         <div className="text-sm opacity-50">
           便签点击可以输入内容，拖拽调整位置或输入框高度
@@ -317,7 +255,7 @@ export default function ControlPanel({
         <div className="text-xs text-gray-600">
           当前便签数量: {notes.length}
         </div>
-      </div>
+      </div> */}
 
       {/* 打印功能区域 */}
       <div className="flex flex-col gap-3 py-3 px-4">
@@ -346,7 +284,7 @@ export default function ControlPanel({
           onClick={onPrint}
           className="px-4 py-2 bg-green-500 text-white text-sm border border-black hover:bg-green-600 transition-colors font-medium"
         >
-          🖨️ 打印右侧内容
+          🖨️ 浏览器打印右侧内容
         </button>
         <div className="text-xs text-gray-600">点击按钮打印右侧卡片内容</div>
         {/* 新增：调用API按钮和结果显示 */}
