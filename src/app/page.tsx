@@ -4,12 +4,12 @@ import { useState } from "react";
 import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
 import ControlPanel from "./components/ControlPanel";
-import ModalScopeProfileCard from "./components/ModalScopeProfileCard";
 import SkeletonProfileCard from "./components/SkeletonProfileCard";
 import { useNotes } from "./hooks/useNotes";
 import { usePageState } from "./hooks/usePageState";
 import { usePrint } from "./hooks/usePrint";
 import { ProfileType } from "./type/profile";
+import AGIProfileCard from "./components/AGIProfileCard";
 
 // SWR fetcher函数
 const fetcher = async (url: string) => {
@@ -133,9 +133,13 @@ export default function Home() {
 
     // 正常状态
     return (
-      <ModalScopeProfileCard
+      <AGIProfileCard
         data={data}
         tags={tags}
+        notes={notes}
+        onUpdateNote={updateNote}
+        onUpdateNotePosition={updateNotePosition}
+        onRemoveNote={removeNote}
       />
     );
   };

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import NoStyleInput from "./NoStyleInput";
 import { snapdom } from "@zumer/snapdom";
+import { useNFCProfileListener } from "../hooks/useNFCProfileListener";
 
 interface ControlPanelProps {
   username: string;
@@ -43,6 +44,9 @@ export default function ControlPanel({
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [_apiImageBase64, setApiImageBase64] = useState<string | null>(null);
+
+  // 仅在自动打印开启时启用NFC监听
+  useNFCProfileListener({ setUsername: onUsernameChange, enabled: autoPrintEnabled });
 
   // 监听用户名变化并在数据加载完成后自动打印
   useEffect(() => {
