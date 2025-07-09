@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 
 interface SkeletonProfileCardProps {
   showError?: boolean;
@@ -9,27 +8,28 @@ interface SkeletonProfileCardProps {
 
 export default function SkeletonProfileCard({
   showError = false,
-  errorMessage = "用户不存在或加载失败",
+  errorMessage = "用户不存在或加载失败"
 }: SkeletonProfileCardProps) {
   return (
     <div
       id="print-area"
       className="aspect-[210/297] w-[595px] h-[842px] flex flex-col items-center gap-8 bg-white relative smooth-transition skeleton-fade-in"
     >
+      <div className="w-full h-5 skeleton-pulse"></div>
 
-      <div className="flex mt-10 items-center gap-5 px-6 w-full">
+      <div className="flex items-center gap-5 px-6 w-full">
         <div className="flex gap-5 items-center">
           {/* 头像骨架屏 */}
-          <div className="size-40 rounded-full shrink-0 bg-gray-200 skeleton-pulse" />
+          <div className="size-40 rounded-full shrink-0  skeleton-pulse" />
 
           <div className="flex flex-col gap-5 justify-around">
             {/* 名字骨架屏 */}
-            <div className="h-12 w-48 bg-gray-200 rounded skeleton-pulse" />
+            <div className="h-12 w-48  rounded skeleton-pulse" />
 
             <div className="space-y-2">
-              <div className="h-8 w-64 bg-gray-200 rounded skeleton-pulse" />
-              <div className="h-6 w-40 bg-gray-200 rounded skeleton-pulse" />
-              <div className="h-6 w-24 bg-gray-200 rounded skeleton-pulse" />
+              <div className="h-8 w-64  rounded skeleton-pulse" />
+              <div className="h-6 w-40  rounded skeleton-pulse" />
+              <div className="h-6 w-24  rounded skeleton-pulse" />
             </div>
           </div>
         </div>
@@ -37,48 +37,45 @@ export default function SkeletonProfileCard({
         <div className="ml-auto flex flex-col shrink-0 justify-around gap-4">
           {[1, 2, 3].map((index) => (
             <div key={index} className="flex flex-col items-center">
-              <Image
-                src="/folder.svg"
-                alt="Folder"
-                width={50}
-                height={50}
-                className="w-12 h-12 opacity-50"
-              />
-              <div className="h-4 w-16 bg-gray-200 rounded skeleton-pulse mt-1" />
+              <div className="size-12 skeleton-pulse"></div>
+              <div className="h-4 w-16  rounded skeleton-pulse mt-1" />
             </div>
           ))}
         </div>
       </div>
 
-      <div className=" bg-[#efefef] w-[calc(100%-3rem)] rounded-2xl">
-        <div className="w-full  p-2">
-          <div className="w-full flex relative items-stretch">
+      <div className="w-full px-6">
+        <div className="w-full h-8 skeleton-pulse"></div>
+        <div className="w-full">
+          <div className="w-full p-2 flex bg-gray-100  relative items-stretch">
             {/* 左边内容区骨架屏 */}
-            <div className="flex flex-col duration-300 gap-4 w-8/10 py-9 px-5 my-3 ml-3">
+            <div className="flex flex-col duration-300 gap-4 w-full py-9 px-5 my-3 ml-3 border-gray-100 border-y-3">
               {showError ? (
-                <div className="flex flex-col items-center justify-center h-32 gap-4">
-                  <div className="text-red-500 text-xl font-fusion-pixel">
-                    ⚠️
-                  </div>
-                  <div className="text-red-500 text-lg font-fusion-pixel text-center">
+                <div className="flex flex-col items-center justify-center h-32 gap-2">
+                  <div className="text-red-500 text-xl ">⚠️</div>
+                  <div className="text-red-500 text-lg  text-center">
                     {errorMessage}
                   </div>
-                  <div className="text-gray-500 text-sm font-fusion-pixel text-center">
+                  <div className="text-gray-500 text-sm  text-center">
                     请检查用户名是否正确
                   </div>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <div className="h-6 w-full bg-gray-200 rounded skeleton-pulse" />
-                  <div className="h-6 w-5/6 bg-gray-200 rounded skeleton-pulse" />
-                  <div className="h-6 w-4/5 bg-gray-200 rounded skeleton-pulse" />
-                  <div className="h-6 w-3/4 bg-gray-200 rounded skeleton-pulse" />
+                  <div className="h-6 w-full  rounded skeleton-pulse" />
+                  <div className="h-6 w-5/6  rounded skeleton-pulse" />
+                  <div className="h-6 w-4/5  rounded skeleton-pulse" />
+                  <div className="h-6 w-3/4  rounded skeleton-pulse" />
                 </div>
               )}
             </div>
           </div>
         </div>
       </div>
+
+      <div
+        className="size-48 rounded-full z-1 absolute bottom-6 right-6 opacity-50 skeleton-pulse"
+      />
     </div>
   );
 }

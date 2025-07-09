@@ -9,7 +9,7 @@ import { useNotes } from "./hooks/useNotes";
 import { usePageState } from "./hooks/usePageState";
 import { usePrint } from "./hooks/usePrint";
 import { ProfileType } from "./type/profile";
-import AGIProfileCard from "./components/AGIProfileCard";
+import AGIProfileCard from "./components/ProfileCard/AGIProfileCard";
 
 // SWR fetcher函数
 const fetcher = async (url: string) => {

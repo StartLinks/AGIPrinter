@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { ProfileType } from "../type/profile";
-import DraggableNote from "./DraggableNote";
+import { ProfileType } from "../../type/profile";
+import DraggableNote from "../DraggableNote";
 
 interface ProfileCardProps {
   data?: ProfileType;

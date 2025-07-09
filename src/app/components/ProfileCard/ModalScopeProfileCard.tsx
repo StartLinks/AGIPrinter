@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ProfileType } from "../type/profile";
+import { ProfileType } from "../../type/profile";
 
 interface ProfileCardProps {
   data?: ProfileType;
