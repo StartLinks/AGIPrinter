@@ -3,9 +3,11 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import NoStyleInput from "./NoStyleInput";
-import { preCache, snapdom } from "@zumer/snapdom";
+// import { preCache, snapdom } from "@zumer/snapdom";
 import { useNFCProfileListener } from "../hooks/useNFCProfileListener";
 import { Theme, THEMES, THEME_LABELS } from "../type/theme";
+import * as htmlToImage from 'html-to-image';
+import download from 'downloadjs';
 
 interface ControlPanelProps {
   username: string;
@@ -79,7 +81,7 @@ export default function ControlPanel({
       // 获取 print-area 的 base64 图片
       const printContent = document.getElementById("print-area");
 
-      await preCache(printContent!);
+      // await preCache(printContent!);
 
       if (!printContent) {
         setApiError("未找到打印区域");
@@ -87,16 +89,24 @@ export default function ControlPanel({
         return;
       }
 
-      const format = "webp"; // 可以根据需要修改为 "png", "jpeg", "jpg", "webp" 等格式
+      const format = "png"; // 可以根据需要修改为 "png", "jpeg", "jpg", "webp" 等格式
       const filename = `bonjour-bio-${debouncedUsername}-${new Date().getTime()}`;
       try {
-        await snapdom.download(printContent, {
-          scale: 3,
-          format,
-          filename,
-          fast: true,
-          embedFonts: true, // 嵌入字体
-        })
+        // await snapdom.download(printContent, {
+        //   scale: 3,
+        //   format,
+        //   filename,
+        //   fast: true,
+        //   embedFonts: true, // 嵌入字体
+        // })
+
+        htmlToImage
+          .toPng(printContent, {
+            pixelRatio: 3, // 设置像素比
+            backgroundColor: "#ffffff", // 设置背景色
+          })
+          .then((dataUrl) => download(dataUrl, `${filename}.${format}`));
+
         return
       } catch (e) {
         const msg = (e && typeof e === 'object' && 'message' in e) ? (e as { message: string }).message : String(e);
