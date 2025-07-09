@@ -9,9 +9,10 @@ import { useNotes } from "./hooks/useNotes";
 import { usePageState } from "./hooks/usePageState";
 import { usePrint } from "./hooks/usePrint";
 import { ProfileType } from "./type/profile";
-import AGIProfileCard from "./components/ProfileCard/AGIProfileCard";
-import ModalScopeProfileCard from "./components/ProfileCard/ModalScopeProfileCard";
+import AGIProfileCard from "./components/ProfileCard/AGIPlayground";
+import ModalScopeProfileCard from "./components/ProfileCard/ModalScope";
 import { Theme, THEMES } from "./type/theme";
+import Advx2025ProfileCard from "./components/ProfileCard/Advx2025";
 
 // SWR fetcher函数
 const fetcher = async (url: string) => {
@@ -144,20 +145,28 @@ export default function Home() {
           tags={tags}
         />
       );
-    }
+    } else if (selectedTheme === THEMES.Advx2025) {
+      return (
+        <Advx2025ProfileCard
+          data={data}
+          tags={tags}
+        />
+      );
+    } else if (selectedTheme === THEMES.AGIPlaygroud) {
 
-    // 默认AGI主题
-    return (
-      <AGIProfileCard
-        data={data}
-        tags={tags}
-        notes={notes}
-        onUpdateNote={updateNote}
-        onUpdateNotePosition={updateNotePosition}
-        onRemoveNote={removeNote}
-      />
-    );
-  };
+      // 默认AGI主题
+      return (
+        <AGIProfileCard
+          data={data}
+          tags={tags}
+          notes={notes}
+          onUpdateNote={updateNote}
+          onUpdateNotePosition={updateNotePosition}
+          onRemoveNote={removeNote}
+        />
+      );
+    };
+  }
 
   return (
     <div className="h-screen flex justify-center bg-blue-800 square-matrix-bg">

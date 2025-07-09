@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import NoStyleInput from "./NoStyleInput";
-import { snapdom } from "@zumer/snapdom";
+import { preCache, snapdom } from "@zumer/snapdom";
 import { useNFCProfileListener } from "../hooks/useNFCProfileListener";
 import { Theme, THEMES, THEME_LABELS } from "../type/theme";
 
@@ -75,53 +75,42 @@ export default function ControlPanel({
     setApiResult(null);
     setApiImageBase64(null);
     try {
+
       // 获取 print-area 的 base64 图片
       const printContent = document.getElementById("print-area");
+
+      await preCache(printContent!);
+
       if (!printContent) {
         setApiError("未找到打印区域");
         setApiLoading(false);
         return;
       }
-      let result;
+
+      const format = "webp"; // 可以根据需要修改为 "png", "jpeg", "jpg", "webp" 等格式
+      const filename = `bonjour-bio-${debouncedUsername}-${new Date().getTime()}`;
       try {
-        result = await snapdom(printContent, { scale: 2 });
+        await snapdom.download(printContent, {
+          scale: 3,
+          format,
+          filename,
+          fast: true,
+          embedFonts: true, // 嵌入字体
+        })
+        return
       } catch (e) {
         const msg = (e && typeof e === 'object' && 'message' in e) ? (e as { message: string }).message : String(e);
         setApiError("截图失败: " + msg);
         setApiLoading(false);
         return;
       }
-      let imageBase64 = "";
-      try {
-        // snapdom 的 toPng() 返回 HTMLImageElement，需要转为 base64
-        const imgElem = await result.toPng();
-        // 创建 canvas 并绘制图片
-        const canvas = document.createElement('canvas');
-        canvas.width = imgElem.width;
-        canvas.height = imgElem.height;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(imgElem, 0, 0);
-          imageBase64 = canvas.toDataURL('image/png');
-        } else {
-          setApiError("无法获取 canvas 上下文");
-          setApiLoading(false);
-          return;
-        }
-      } catch (e) {
-        const msg = (e && typeof e === 'object' && 'message' in e) ? (e as { message: string }).message : String(e);
-        setApiError("图片转码失败: " + msg);
-        setApiLoading(false);
-        return;
-      }
-      setApiImageBase64(imageBase64);
-      // 发送 base64 到 API
+
       const res = await fetch("/api/run-command", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ imageBase64 }),
+        body: JSON.stringify({ filename: `${filename}.${format}` }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -246,28 +235,22 @@ export default function ControlPanel({
         <div className="text-sm opacity-50">
           选择名片显示主题
         </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => onThemeChange(THEMES.AGIPlaygroud)}
-            className={`px-3 py-1 text-sm border border-black transition-colors ${selectedTheme === THEMES.AGIPlaygroud
-              ? 'bg-blue-500 text-white'
-              : 'bg-white text-black hover:bg-gray-100'
-              }`}
-          >
-            {THEME_LABELS.AGIPlaygroud}
-          </button>
-          <button
-            onClick={() => onThemeChange(THEMES.ModalScope)}
-            className={`px-3 py-1 text-sm border border-black transition-colors ${selectedTheme === THEMES.ModalScope
-              ? 'bg-blue-500 text-white'
-              : 'bg-white text-black hover:bg-gray-100'
-              }`}
-          >
-            {THEME_LABELS.ModalScope}
-          </button>
+        <div className="flex gap-2 flex-wrap">
+          {Object.entries(THEMES).map(([key, value]) => (
+            <button
+              key={key}
+              onClick={() => onThemeChange(value)}
+              className={`px-3 py-1 text-sm border border-black transition-colors ${selectedTheme === value
+                ? 'bg-blue-500 text-white'
+                : 'bg-white text-black hover:bg-gray-100'
+                }`}
+            >
+              {THEME_LABELS[key as keyof typeof THEME_LABELS]}
+            </button>
+          ))}
         </div>
         <div className="text-xs text-gray-600">
-          当前主题: {selectedTheme}
+          当前主题: {THEME_LABELS[selectedTheme as keyof typeof THEME_LABELS]}
         </div>
       </div>
 

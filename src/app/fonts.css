@@ -1,5 +1,31 @@
 /* 字体定义 - 引入所有自定义字体 */
 
+/* Advx2025 字体 */
+@font-face {
+    font-family: 'Orbix';
+    src: url('/Advx2025/Orbix-Regular.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IBMPlexSansSC';
+    src: url('/Advx2025/IBMPlexSansSC-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'IBMPlexSansSC';
+    src: url('/Advx2025/IBMPlexSansSC-Medium.ttf') format('truetype');
+    font-weight: medium;
+    font-style: normal;
+    font-display: swap;
+}
+
 @font-face {
     font-family: 'FindersKeepers';
     src: url('/FindersKeepers.ttf') format('truetype');
