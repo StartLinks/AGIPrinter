@@ -10,6 +10,8 @@ import { usePageState } from "./hooks/usePageState";
 import { usePrint } from "./hooks/usePrint";
 import { ProfileType } from "./type/profile";
 import AGIProfileCard from "./components/ProfileCard/AGIProfileCard";
+import ModalScopeProfileCard from "./components/ProfileCard/ModalScopeProfileCard";
+import { Theme, THEMES } from "./type/theme";
 
 // SWR fetcher函数
 const fetcher = async (url: string) => {
@@ -53,6 +55,9 @@ export default function Home() {
 
   // 用户名输入状态
   const [username, setUsername] = useState<string>("rabithua");
+
+  // 主题选择状态
+  const [selectedTheme, setSelectedTheme] = useState<Theme>(THEMES.AGIPlaygroud);
 
   // 防抖处理用户名，延迟500ms
   const [debouncedUsername] = useDebounce(username, 500);
@@ -131,7 +136,17 @@ export default function Home() {
       return <SkeletonProfileCard showError={false} />;
     }
 
-    // 正常状态
+    // 根据选择的主题渲染不同的组件
+    if (selectedTheme === THEMES.ModalScope) {
+      return (
+        <ModalScopeProfileCard
+          data={data}
+          tags={tags}
+        />
+      );
+    }
+
+    // 默认AGI主题
     return (
       <AGIProfileCard
         data={data}
@@ -157,6 +172,8 @@ export default function Home() {
           onAddNote={addNote}
           onRemoveNote={removeLastNote}
           onPrint={handlePrint}
+          selectedTheme={selectedTheme}
+          onThemeChange={setSelectedTheme}
         />
 
         {renderRightPanel()}

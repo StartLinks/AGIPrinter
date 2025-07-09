@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import NoStyleInput from "./NoStyleInput";
 import { snapdom } from "@zumer/snapdom";
 import { useNFCProfileListener } from "../hooks/useNFCProfileListener";
+import { Theme, THEMES, THEME_LABELS } from "../type/theme";
 
 interface ControlPanelProps {
   username: string;
@@ -20,6 +21,8 @@ interface ControlPanelProps {
   onAddNote: () => void;
   onRemoveNote: () => void;
   onPrint: () => void;
+  selectedTheme: Theme;
+  onThemeChange: (theme: Theme) => void;
 }
 
 export default function ControlPanel({
@@ -28,10 +31,12 @@ export default function ControlPanel({
   debouncedUsername,
   isLoading,
   error,
-  notes,
-  onAddNote,
-  onRemoveNote,
+  notes: _notes,
+  onAddNote: _onAddNote,
+  onRemoveNote: _onRemoveNote,
   onPrint,
+  selectedTheme,
+  onThemeChange,
 }: ControlPanelProps) {
   // 显示URL提取提示的状态
   const [showUrlExtractedTip, setShowUrlExtractedTip] = useState(false);
@@ -233,6 +238,37 @@ export default function ControlPanel({
             </span>
           </div>
         )}
+      </div>
+
+      {/* 主题选择区域 */}
+      <div className="flex flex-col gap-3 py-3 px-4">
+        <div className="font-semibold">主题选择</div>
+        <div className="text-sm opacity-50">
+          选择名片显示主题
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => onThemeChange(THEMES.AGIPlaygroud)}
+            className={`px-3 py-1 text-sm border border-black transition-colors ${selectedTheme === THEMES.AGIPlaygroud
+              ? 'bg-blue-500 text-white'
+              : 'bg-white text-black hover:bg-gray-100'
+              }`}
+          >
+            {THEME_LABELS.AGIPlaygroud}
+          </button>
+          <button
+            onClick={() => onThemeChange(THEMES.ModalScope)}
+            className={`px-3 py-1 text-sm border border-black transition-colors ${selectedTheme === THEMES.ModalScope
+              ? 'bg-blue-500 text-white'
+              : 'bg-white text-black hover:bg-gray-100'
+              }`}
+          >
+            {THEME_LABELS.ModalScope}
+          </button>
+        </div>
+        <div className="text-xs text-gray-600">
+          当前主题: {selectedTheme}
+        </div>
       </div>
 
       {/* 便签管理区域 */}
